@@ -1,8 +1,12 @@
+require 'nokogiri'
+
 # frozen_string_literal: true
 
 # my class
 class SequencesController < ApplicationController
   before_action :set_sequence, only: %i[show edit update destroy]
+  XSLT_SERVER_TRANSFORM = "#{Rails.root}/public/server_transform.xslt".freeze
+
   # Get user input
   def input; end
 
@@ -12,7 +16,11 @@ class SequencesController < ApplicationController
   end
 
   # GET /sequences/1 or /sequences/1.json
-  def show; end
+  def show
+    doc = Nokogiri::XML(@sequence.output)
+    xslt = Nokogiri::XSLT(File.read(XSLT_SERVER_TRANSFORM))
+    @show_result = xslt.transform(doc)
+  end
 
   # GET /sequences/new
   def new
@@ -79,16 +87,11 @@ class SequencesController < ApplicationController
     subs_arr = find_increasing_subs(input).filter { |arr| arr.count > 1 }
     subs = subs_arr.map { |subseq| subseq.join(' ') }
     result = subs_arr.max_by(&:length).join(' ')
-    # input = input.join(' ')
-
-    # calc_hash = subs.each_with_object({}).with_index { |m, ind| m[1]["s%20i=#{ind}"] = m[0] }
     calc_hash = subs.each_with_object({}).with_index(1) { |m, ind| m[1]["s#{ind}"] = m[0] }
 
     ans_hash = { s: result }
     output_hash = { calc: calc_hash, ans: ans_hash }
-    output_xml = output_hash.to_xml.gsub('hash', 'output').gsub(/<s(\d)>/, '<s i="\1">').gsub(%r{</s(\d)>}, '</s>')
-
-    output_xml
+    output_hash.to_xml.gsub('hash', 'output').gsub(/<s(\d)>/, '<s i="\1">').gsub(%r{</s(\d)>}, '</s>')
   end
 
   def find_increasing_subs(input)
