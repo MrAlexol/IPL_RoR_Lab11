@@ -7,26 +7,10 @@ class SequencesController < ApplicationController
   before_action :set_sequence, only: %i[show edit update destroy]
   XSLT_SERVER_TRANSFORM = "#{Rails.root}/public/server_transform.xslt".freeze
 
-  # Get user input
-  def input; end
-
-  def output
-    respond_to do |format|
-      format.html do
-        found_id = Sequence.search_id(params[:search])
-        unless found_id.nil?
-          redirect_to action: 'show', id: found_id
-        else
-          redirect_to action: 'new'
-        end
-      end
-    end
-  end
-
   # GET /sequences or /sequences.json
   def index
-    #@sequences = Sequence.all
-    @sequences = Sequence.search(params[:search])
+    # @sequences = Sequence.all
+    @sequences = Sequence.search(params[:values])
   end
 
   # GET /sequences/1 or /sequences/1.json
@@ -48,15 +32,19 @@ class SequencesController < ApplicationController
   def create
     @sequence = Sequence.new(sequence_params)
     @sequence.output = make_output(sequence_params[:values]) if @sequence.valid?
-
-    respond_to do |format|
-      if @sequence.save
-        format.html { redirect_to @sequence, notice: 'Sequence was successfully created.' }
-        format.json { render :show, status: :created, location: @sequence }
-      else
-        format.html { render :new, status: :unprocessable_entity }
-        format.json { render json: @sequence.errors, status: :unprocessable_entity }
+    found_id = Sequence.search_id(sequence_params[:values])
+    if found_id.nil?
+      respond_to do |format|
+        if @sequence.save
+          format.html { redirect_to @sequence, notice: 'Sequence was successfully created.' }
+          format.json { render :show, status: :created, location: @sequence }
+        else
+          format.html { render :new, status: :unprocessable_entity }
+          format.json { render json: @sequence.errors, status: :unprocessable_entity }
+        end
       end
+    else
+      redirect_to action: 'show', id: found_id
     end
   end
 
