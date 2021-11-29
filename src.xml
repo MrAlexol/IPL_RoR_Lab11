@@ -1,0 +1,1 @@
+<?xml version="1.0" encoding="UTF-8"?> <output> <calc> <s i="1">4 5 6</s> <s i="2">1 2 3 4</s> <s i="3">1 2 3 4</s> <s i="4">-7 4 6</s> </calc> <ans> <s>1 2 3 4</s> </ans> </output>
