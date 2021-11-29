@@ -83,7 +83,7 @@ class SequencesController < ApplicationController
   end
 
   def make_output(input)
-    input = input.split(' ')
+    input = input.split(' ').map { |el| Integer el }
     return if input.nil? || input.empty?
 
     subs_arr = find_increasing_subs(input).filter { |arr| arr.count > 1 }

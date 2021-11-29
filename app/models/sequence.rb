@@ -2,6 +2,10 @@
 
 class GoodnessValidator < ActiveModel::Validator
   def validate(record)
+    if record.values.nil?
+      record.errors.add :values, 'Параметр не представлен'
+      return
+    end
     record.errors.add :values, 'Последовательность короче 10 чисел' if record.values.split(' ').length < 10
   end
 end
@@ -16,7 +20,7 @@ class Sequence < ApplicationRecord
     if search
       where(values: search)
     else
-      all.last(10)
+      all.last(50)
     end
   end
 
