@@ -7,8 +7,20 @@ class GoodnessValidator < ActiveModel::Validator
 end
 
 class Sequence < ApplicationRecord
-  validates :values, presence: true,# uniqueness: true,
+  validates :values, presence: true, uniqueness: true,
              format: { with: /\A-?\d+( +-?\d+)*\z/, message: 'only allows numbers' }
   validates_with GoodnessValidator, fields: [:values]
   #validates :output, presence: true
+
+  def self.search(search)
+    if search
+      where(values: search)
+    else
+      all.last(10)
+    end
+  end
+
+  def self.search_id(search)
+    select(:id).find_by(values: search) if search
+  end
 end

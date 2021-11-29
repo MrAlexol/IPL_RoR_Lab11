@@ -1,6 +1,6 @@
-require 'nokogiri'
-
 # frozen_string_literal: true
+
+require 'nokogiri'
 
 # my class
 class SequencesController < ApplicationController
@@ -10,9 +10,23 @@ class SequencesController < ApplicationController
   # Get user input
   def input; end
 
+  def output
+    respond_to do |format|
+      format.html do
+        found_id = Sequence.search_id(params[:search])
+        unless found_id.nil?
+          redirect_to action: 'show', id: found_id
+        else
+          redirect_to action: 'new'
+        end
+      end
+    end
+  end
+
   # GET /sequences or /sequences.json
   def index
-    @sequences = Sequence.all
+    #@sequences = Sequence.all
+    @sequences = Sequence.search(params[:search])
   end
 
   # GET /sequences/1 or /sequences/1.json
