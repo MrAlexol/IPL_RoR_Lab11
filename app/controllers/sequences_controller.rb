@@ -6,7 +6,7 @@ require 'nokogiri'
 class SequencesController < ApplicationController
   before_action :set_sequence, only: %i[show edit update destroy]
   XSLT_SHOW_TRANSFORM = "#{Rails.root}/public/server_transform.xslt".freeze
-
+  helper_method :make_output
   # GET /sequences or /sequences.json
   def index
     @sequences = Sequence.last(50)
