@@ -1,7 +1,7 @@
 <%= form_with(model: sequence) do |form| %>
   <% if sequence.errors.any? %>
     <div id="error_explanation">
-      <h2>Пожалуйста, справьте следующие ошибки ввода:</h2>
+      <h2>Пожалуйста, исправьте следующие ошибки ввода:</h2>
 
       <ul>
         <% sequence.errors[:values].each do |error| %>

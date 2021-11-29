@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# Валидатор введенной последовательности чисел
 class GoodnessValidator < ActiveModel::Validator
   def validate(record)
     if record.values.nil?
@@ -10,8 +11,9 @@ class GoodnessValidator < ActiveModel::Validator
   end
 end
 
+# Модель последовательности
 class Sequence < ApplicationRecord
-  validates :values, presence: { message: "Вы ничего не ввели" }, # uniqueness: true,
+  validates :values, presence: { message: "Вы ничего не ввели" },
              format: { with: /\A-?\d+( +-?\d+)*\z/, message: 'Вводите только цифры через пробел!' }
   validates_with GoodnessValidator, fields: [:values]
   # validates :output, presence: true

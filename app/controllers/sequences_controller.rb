@@ -9,12 +9,12 @@ class SequencesController < ApplicationController
   helper_method :make_output
   # GET /sequences or /sequences.json
   def index
-    @sequences = Sequence.last(50)
+    @sequences = Sequence.last(50) # будем выводить лишь последние 50 записей
     respond_to do |format|
-      format.html do
+      format.html do # Вывод списка записей в формате html
         render 'index'
       end
-      format.xml do
+      format.xml do # Вывод списка записей в едином XML
         p xml_arr = @sequences.inject([]) { |acc, el| acc.append el.output }
         doc_result = Nokogiri::XML('<db></db>')
         xml_arr.each_with_object(doc_result) do |el, acc|
@@ -29,6 +29,8 @@ class SequencesController < ApplicationController
 
   # GET /sequences/1 or /sequences/1.json
   def show
+    # В базе данных поле Output хранится в формате XML.
+    # Преобразуем его в таблицу для вывода пользователю
     doc = Nokogiri::XML(@sequence.output)
     xslt = Nokogiri::XSLT(File.read(XSLT_SHOW_TRANSFORM))
     @show_result = xslt.transform(doc)
@@ -45,7 +47,9 @@ class SequencesController < ApplicationController
   # POST /sequences or /sequences.json
   def create
     @sequence = Sequence.new(sequence_params)
+    # Рассчитаем поле Output, если пользователь ввел корректную последовательность
     @sequence.output = make_output(sequence_params[:values]) if @sequence.valid?
+    # Проверим, есть ли в БД данная последовательность.
     found_id = Sequence.search_id(sequence_params[:values])
     if found_id.nil?
       respond_to do |format|
@@ -102,11 +106,12 @@ class SequencesController < ApplicationController
 
     subs_arr = find_increasing_subs(input).filter { |arr| arr.count > 1 }
     subs = subs_arr.map { |subseq| subseq.join(' ') }
-    result = subs_arr.max_by(&:length).join(' ')
+    result = subs_arr.max_by(&:length)&.join(' ')
     calc_hash = subs.each_with_object({}).with_index(1) { |m, ind| m[1]["s#{ind}"] = m[0] }
 
-    ans_hash = { s: result }
+    ans_hash = { s: result || 'Не найдено' }
     output_hash = { calc: calc_hash, ans: ans_hash }
+    # Сформируем XML для записи в БД
     output_hash.to_xml.gsub('hash', 'output').gsub(/<s(\d)>/, '<s i="\1">').gsub(%r{</s(\d)>}, '</s>')
   end
 
