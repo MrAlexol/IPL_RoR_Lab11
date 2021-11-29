@@ -5,18 +5,18 @@ require 'nokogiri'
 # my class
 class SequencesController < ApplicationController
   before_action :set_sequence, only: %i[show edit update destroy]
-  XSLT_SERVER_TRANSFORM = "#{Rails.root}/public/server_transform.xslt".freeze
+  XSLT_SHOW_TRANSFORM = "#{Rails.root}/public/server_transform.xslt".freeze
 
   # GET /sequences or /sequences.json
   def index
-    # @sequences = Sequence.all
-    @sequences = Sequence.search(params[:values])
+    @sequences = Sequence.last(50)
+    # @sequences = Sequence.search(params[:values])
   end
 
   # GET /sequences/1 or /sequences/1.json
   def show
     doc = Nokogiri::XML(@sequence.output)
-    xslt = Nokogiri::XSLT(File.read(XSLT_SERVER_TRANSFORM))
+    xslt = Nokogiri::XSLT(File.read(XSLT_SHOW_TRANSFORM))
     @show_result = xslt.transform(doc)
   end
 

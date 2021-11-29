@@ -1,22 +1,22 @@
 <%= form_with(model: sequence) do |form| %>
   <% if sequence.errors.any? %>
     <div id="error_explanation">
-      <h2><%= pluralize(sequence.errors.count, "error") %> prohibited this sequence from being saved:</h2>
+      <h2>Пожалуйста, справьте следующие ошибки ввода:</h2>
 
       <ul>
-        <% sequence.errors.each do |error| %>
-          <li><%= error.full_message %></li>
+        <% sequence.errors[:values].each do |error| %>
+          <li><%= error %></li>
         <% end %>
       </ul>
     </div>
   <% end %>
 
   <div class="field">
-    <%= form.label :values %>
-    <%= form.text_field :values %>
+    <%= form.label :values, 'Последовательность' %>
+    <%= form.text_field :values, style: 'min-width: 300px; width: 30%' %>
   </div>
 
   <div class="actions">
-    <%= form.submit %>
+    <%= form.submit 'Найти' %>
   </div>
 <% end %>

@@ -10,14 +10,14 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_11_28_202219) do
+ActiveRecord::Schema.define(version: 2021_11_29_160310) do
 
   create_table "sequences", force: :cascade do |t|
     t.string "values"
     t.text "output"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.index ["values"], name: "index_sequences_on_values"
+    t.index ["values"], name: "index_sequences_on_values", unique: true
   end
 
 end

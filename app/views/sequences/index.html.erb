@@ -1,12 +1,12 @@
 <p id="notice"><%= notice %></p>
 
-<h1>Sequences</h1>
+<h1>Последовательности</h1>
 
 <table>
   <thead>
     <tr>
-      <th>Values</th>
-      <th>Output</th>
+      <th>Последовательность</th>
+      <th>Результат</th>
       <th colspan="3"></th>
     </tr>
   </thead>
@@ -16,9 +16,8 @@
       <tr>
         <td><%= sequence.values %></td>
         <td><%= sequence.output %></td>
-        <td><%= link_to 'Show', sequence %></td>
-        <td><%= link_to 'Edit', edit_sequence_path(sequence) %></td>
-        <td><%= link_to 'Destroy', sequence, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+        <td><%= link_to 'Посмотреть', sequence %></td>
+        <td><%= link_to 'Удалить', sequence, method: :delete, data: { confirm: 'Вы уверены?' } %></td>
       </tr>
     <% end %>
   </tbody>
@@ -26,4 +25,4 @@
 
 <br>
 
-<%= link_to 'New Sequence', new_sequence_path %>
+<%= link_to 'Вычислить подпоследовательности', new_sequence_path %>

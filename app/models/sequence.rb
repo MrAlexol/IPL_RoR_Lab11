@@ -2,13 +2,13 @@
 
 class GoodnessValidator < ActiveModel::Validator
   def validate(record)
-    record.errors.add :base, 'seq < 10' if record.values.split(' ').length < 10
+    record.errors.add :values, 'Последовательность короче 10 чисел' if record.values.split(' ').length < 10
   end
 end
 
 class Sequence < ApplicationRecord
-  validates :values, presence: true,# uniqueness: true,
-             format: { with: /\A-?\d+( +-?\d+)*\z/, message: 'only allows numbers' }
+  validates :values, presence: { message: "Вы ничего не ввели" }, # uniqueness: true,
+             format: { with: /\A-?\d+( +-?\d+)*\z/, message: 'Вводите только цифры через пробел!' }
   validates_with GoodnessValidator, fields: [:values]
   # validates :output, presence: true
 
