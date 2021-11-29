@@ -10,6 +10,20 @@ class SequencesController < ApplicationController
   # GET /sequences or /sequences.json
   def index
     @sequences = Sequence.last(50)
+    respond_to do |format|
+      format.html do
+        render 'index'
+      end
+      format.xml do
+        p xml_arr = @sequences.inject([]) { |acc, el| acc.append el.output }
+        doc_result = Nokogiri::XML('<db></db>')
+        xml_arr.each_with_object(doc_result) do |el, acc|
+          el = Nokogiri::XML(el).search('output')
+          acc.at('db').add_child(el)
+        end
+        render xml: doc_result
+      end
+    end
     # @sequences = Sequence.search(params[:values])
   end
 
