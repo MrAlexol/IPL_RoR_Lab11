@@ -5,7 +5,9 @@ require 'nokogiri'
 # my class
 class SequencesController < ApplicationController
   before_action :set_sequence, only: %i[show edit update destroy]
-  XSLT_SHOW_TRANSFORM = "#{Rails.root}/public/server_transform.xslt".freeze
+  XSLT_SHOW_TRANSFORM = "#{Rails.root}/public/server_transform.xslt"
+  # Нарушим приватность методов контроллера,
+  # чтобы тесты могли работать:
   helper_method :make_output
   # GET /sequences or /sequences.json
   def index
@@ -15,7 +17,7 @@ class SequencesController < ApplicationController
         render 'index'
       end
       format.xml do # Вывод списка записей в едином XML
-        p xml_arr = @sequences.inject([]) { |acc, el| acc.append el.output }
+        xml_arr = @sequences.inject([]) { |acc, el| acc.append el.output }
         doc_result = Nokogiri::XML('<db></db>')
         xml_arr.each_with_object(doc_result) do |el, acc|
           el = Nokogiri::XML(el).search('output')
@@ -112,7 +114,7 @@ class SequencesController < ApplicationController
     ans_hash = { s: result || 'Не найдено' }
     output_hash = { calc: calc_hash, ans: ans_hash }
     # Сформируем XML для записи в БД
-    output_hash.to_xml.gsub('hash', 'output').gsub(/<s(\d)>/, '<s i="\1">').gsub(%r{</s(\d)>}, '</s>')
+    output_hash.to_xml.gsub('hash', 'output').gsub(/<s(\d+)>/, '<s i="\1">').gsub(%r{</s(\d+)>}, '</s>')
   end
 
   def find_increasing_subs(input)

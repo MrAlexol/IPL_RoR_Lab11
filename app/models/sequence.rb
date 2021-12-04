@@ -22,7 +22,7 @@ class Sequence < ApplicationRecord
     if search
       where(values: search)
     else
-      all.last(50)
+      last(50)
     end
   end
 
